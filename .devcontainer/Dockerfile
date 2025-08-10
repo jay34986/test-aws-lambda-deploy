@@ -100,6 +100,7 @@ RUN dnf update -y && \
     python3.12-3.12.11 \
     python3.12-pip-23.2.1 \
     tar-1.34 \
+    tree-1.8.0 \
     unzip-6.0 \
     xz-5.2.5 && \
     dnf clean all
