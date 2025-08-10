@@ -1,0 +1,52 @@
+---
+name: Deploy Lambda Function
+
+run-name: Deploy Lambda Function on ${{ github.ref_name }}
+
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - main
+    paths:
+      - "src/lambda/*"
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  ROLE_TO_ASSUME: ${{ secrets.ROLE_TO_ASSUME }}
+
+jobs:
+  deploy-lambda:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        # v4.2.2
+        with:
+          persist-credentials: "false"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a #v4.3.1
+        with:
+          aws-region: ap-northeast-1
+          mask-aws-account-id: true
+          role-to-assume: "${{ env.ROLE_TO_ASSUME }}"
+
+      - name: Deploy Lambda Function
+        uses: aws-actions/aws-lambda-deploy@adf3041f6b285d61334ae702e0b6e8e1080f9eb0 #v1
+        with:
+          architectures: arm64
+          code-artifacts-dir: src/lambda
+          function-name: lambda_function
+          handler: lambda_function.lambda_handler
+          role: arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+          runtime: python3.13
