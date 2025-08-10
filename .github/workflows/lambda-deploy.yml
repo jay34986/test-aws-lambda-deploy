@@ -20,6 +20,7 @@ permissions:
   id-token: write
 
 env:
+  LAMBDA_EXECUTION_ROLE: ${{ secrets.LAMBDA_EXECUTION_ROLE }}
   ROLE_TO_ASSUME: ${{ secrets.ROLE_TO_ASSUME }}
 
 jobs:
@@ -48,5 +49,5 @@ jobs:
           code-artifacts-dir: src/lambda
           function-name: lambda_function
           handler: lambda_function.lambda_handler
-          role: arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+          role: "${{ env.LAMBDA_EXECUTION_ROLE }}"
           runtime: python3.13
