@@ -39,7 +39,7 @@ jobs:
         with:
           aws-region: ap-northeast-1
           mask-aws-account-id: true
-          role-to-assume: "${ROLE_TO_ASSUME}"
+          role-to-assume: "${{ env.ROLE_TO_ASSUME }}"
 
       - name: Deploy Lambda Function
         uses: aws-actions/aws-lambda-deploy@adf3041f6b285d61334ae702e0b6e8e1080f9eb0 #v1
